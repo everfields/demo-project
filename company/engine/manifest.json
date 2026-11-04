@@ -7,11 +7,11 @@
     ".claude/skills/cos-incident/SKILL.md": "ef6ab65352413e1e",
     ".claude/skills/cos-reporter/SKILL.md": "8246f3794a573282",
     ".claude/skills/cos-retro/SKILL.md": "5d01f8d39eb2e832",
-    ".github/workflows/cos-event.yml": "db922841bacfdfb1",
-    ".github/workflows/cos-gate.yml": "1f676e39aa670376",
-    ".github/workflows/cos-loop.yml": "c3befae01726550f",
-    ".github/workflows/cos-pulse.yml": "fa266e8aa361ec30"
+    ".github/workflows/cos-event.yml": "1b83571a355958d8",
+    ".github/workflows/cos-gate.yml": "d77602e4b05ff4db",
+    ".github/workflows/cos-loop.yml": "21822bc57e60bc24",
+    ".github/workflows/cos-pulse.yml": "1c69f06376651ae3"
   },
   "engine_version": "1.0.0",
-  "installed_at": "2026-11-04T01:32:03Z"
+  "installed_at": "2026-11-04T01:34:10Z"
 }

@@ -40,20 +40,25 @@ jobs:
       actions: read
       checks: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           filter: blob:none
           persist-credentials: false
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - name: Project setup (only for loops that build or test)
         run: node company/engine/cos.mjs setup --loop "$LOOP"
         env:
           LOOP: ${{ inputs.loop }}
-      - name: Install Claude Code
-        run: npm install -g @anthropic-ai/claude-code@latest --no-fund --no-audit --loglevel=error
+      - name: Install Claude Code and its shell sandbox
+        # CLAUDE_CODE_SUBPROCESS_ENV_SCRUB (keeps the Claude token out of the worker's shell) needs bubblewrap on
+        # Linux, and Ubuntu 24.04 blocks the unprivileged user namespaces bubblewrap uses unless told otherwise.
+        run: |
+          command -v bwrap >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq bubblewrap >/dev/null; }
+          sudo sysctl -q -w kernel.apparmor_restrict_unprivileged_userns=0 || true
+          npm install -g @anthropic-ai/claude-code@latest --no-fund --no-audit --loglevel=error
       - name: Run the worker
         run: node company/engine/cos.mjs run "$LOOP" --out "$RUNNER_TEMP/cos-out"
         env:
@@ -63,7 +68,7 @@ jobs:
           COS_PAYLOAD: ${{ inputs.payload }}
           CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           GH_TOKEN: ${{ github.token }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: cos-run
@@ -82,14 +87,14 @@ jobs:
       pull-requests: write
       actions: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           filter: blob:none
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         id: get
         continue-on-error: true
         with:
