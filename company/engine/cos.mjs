@@ -14,7 +14,7 @@ import crypto from 'node:crypto';
 import readline from 'node:readline';
 import { spawn, spawnSync } from 'node:child_process';
 
-const VERSION = '1.0.0';
+const VERSION = '1.1.0';
 const MIN = 60_000;
 const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
@@ -333,6 +333,28 @@ function commit(message, paths) {
 const currentBranch = () => gitOk('rev-parse', '--abbrev-ref', 'HEAD');
 const head = () => gitOk('rev-parse', 'HEAD');
 
+const ENGINE_STATE = (p) => p.startsWith('company/agenda/') || p.startsWith('company/state/');
+const rebasing = () => ['rebase-merge', 'rebase-apply'].some((d) => fs.existsSync(path.join(root(), '.git', d)));
+/**
+ * Rebases the current branch on `upstream`. Conflicts confined to engine state (agenda items, run state) resolve to
+ * this run's version, which is always the newer fact (e.g. "done" over "fired"); any other conflict aborts.
+ */
+function rebaseOnto(upstream) {
+  if (git('rebase', '-q', upstream).ok) return true;
+  for (let i = 0; i < 100 && rebasing(); i++) {
+    const conflicted = git('diff', '--name-only', '--diff-filter=U').out.split('\n').filter(Boolean);
+    if (conflicted.some((p) => !ENGINE_STATE(p))) break;
+    if (conflicted.length) {
+      git('checkout', '--theirs', '--', ...conflicted);
+      git('add', '--', ...conflicted);
+    }
+    run('git', [...idArgs(), 'rebase', '--continue'], { env: { ...process.env, GIT_EDITOR: 'true' } });
+  }
+  if (!rebasing()) return true;
+  git('rebase', '--abort');
+  return false;
+}
+
 /** Pushes the current branch to origin, rebasing on what landed meanwhile. A conflict parks the work on a branch. */
 function pushBranch(label) {
   if (process.env.COS_NO_PUSH === '1') {
@@ -343,10 +365,7 @@ function pushBranch(label) {
   for (let attempt = 1; attempt <= 4; attempt++) {
     if (git('push', '-q', 'origin', `HEAD:${branch}`).ok) return true;
     git('fetch', '-q', 'origin', branch);
-    if (!git('rebase', '-q', `origin/${branch}`).ok) {
-      git('rebase', '--abort');
-      break;
-    }
+    if (!rebaseOnto(`origin/${branch}`)) break;
   }
   const park = `cos/unpushed/${slug(label, 50)}-${rand()}`;
   git('push', '-q', 'origin', `HEAD:refs/heads/${park}`);
@@ -1142,6 +1161,7 @@ async function cmdRun(id, o) {
     ...process.env,
     COS_LOOP: loop.id,
     COS_RUN_ID: runId,
+    COS_AGENDA_IDS: trigger.agendaIds.join(','),
     COS_ROOT: root(),
     COS_REQUESTS: reqFile,
     // Keeps the Claude token out of the worker's shell (needs bubblewrap and socat on Linux). Runtimes that cannot
@@ -1222,16 +1242,22 @@ async function land(meta) {
     log(r.ok ? `pushed branch ${b}` : `could not push ${b}: ${r.err}`);
   }
   for (const req of meta.requests ?? []) await safeAsync(() => executeRequest(req, company));
-  // Fast path: agenda entries this run created and due now start at once instead of waiting for the pulse.
-  for (const e of agendaAll().filter((x) => x.kind === 'task' && x.status === 'pending' && x.created_run === meta.run && new Date(x.due) <= now())) {
-    await safeAsync(async () => {
-      await dispatch(loopById(e.loop), { reason: e.reason, agendaIds: [e.id], context: e.context });
-      e.status = 'fired';
-      e.fired_at = iso();
-      agendaSave(e);
-    });
+  // Fast path: agenda entries this run created and due now start at once instead of waiting for the pulse. They are
+  // marked "fired" and pushed first, so the runs they start begin from that state; a failed start goes back to the pulse.
+  const fast = agendaAll().filter((x) => x.kind === 'task' && x.status === 'pending' && x.created_run === meta.run && new Date(x.due) <= now());
+  if (fast.length) {
+    for (const e of fast) agendaSave(Object.assign(e, { status: 'fired', fired_at: iso() }));
+    if (commit(`cos: ${meta.loop} starts ${fast.map((e) => e.loop).join(', ')}`, ['company/agenda'])) pushBranch(`${meta.run}-dispatch`);
+    let back = 0;
+    for (const e of fast) {
+      const started = await safeAsync(() => dispatch(loopById(e.loop), { reason: e.reason, agendaIds: [e.id], context: e.context }), false);
+      if (started === false) {
+        agendaSave(Object.assign(e, { status: 'pending', fired_at: null }));
+        back++;
+      }
+    }
+    if (back && commit(`cos: ${back} start(s) left to the pulse`, ['company/agenda'])) pushBranch(`${meta.run}-dispatch-retry`);
   }
-  if (commit(`cos: ${meta.loop} fast-path dispatches`, ['company/agenda'])) pushBranch(`${meta.run}-dispatch`);
   return landed;
 }
 async function executeRequest(req, company) {
@@ -1296,8 +1322,7 @@ async function cmdLand(o) {
   if (bad.length) return land({ ...meta, mainRef, local: false });
   // Replay the run's commits on top of the main we checked out (which may be ahead of the run's start).
   gitOk('checkout', '-q', '-B', '__cos_land', mainRef);
-  if (!git('rebase', '-q', branch).ok) {
-    git('rebase', '--abort');
+  if (!rebaseOnto(branch)) {
     const park = `cos/unpushed/${meta.run}`;
     git('push', '-q', 'origin', `${mainRef}:refs/heads/${park}`);
     safe(() => alarmOpen(`push:${meta.run}`, `Company OS could not land ${meta.run}`, `Conflicts with main; parked on \`${park}\`.`, 'high'));
@@ -1319,6 +1344,7 @@ async function cmdPulse(o) {
   const t = now();
   const pulseFile = statePath('pulse.json');
   const st = readJson(pulseFile, {});
+  const stAtStart = JSON.stringify({ ...st, last_pulse: null, heartbeat_at: null });
   const last = st.last_pulse ? new Date(st.last_pulse) : new Date(t.getTime() - (company.runtime?.pulse_minutes ?? 60) * MIN);
   const due = new Map();
   const want = (loop, reason, agendaId, context) => {
@@ -1378,16 +1404,21 @@ async function cmdPulse(o) {
     }
     if (w.state?.last_checked && t - new Date(w.state.last_checked) < parseDuration(w.every) - 5 * MIN) continue;
     const r = await safeAsync(() => evaluateWatch(w), { failing: false, detail: 'check error' });
-    w.state = { ...(w.state ?? {}), last_checked: iso(t), last_result: r.detail, fails: r.failing ? (w.state?.fails ?? 0) + 1 : 0 };
+    const prev = w.state ?? {};
+    w.state = { ...prev, last_checked: iso(t), last_result: r.detail, fails: r.failing ? (prev.fails ?? 0) + 1 : 0 };
     const cooled = !w.state.last_fired || t - new Date(w.state.last_fired) > parseDuration(w.cooldown ?? '6h');
+    let fired = false;
     if (r.failing && w.state.fails >= w.threshold && cooled) {
       const loop = config().loops.find((l) => l.id === w.on_fail.loop);
       if (loop) want(loop, `watcher ${w.id}: ${w.on_fail.reason} (${r.detail})`, null, `Watcher ${w.id}: ${JSON.stringify(w.check)}`);
       w.state.last_fired = iso(t);
       watchNotes.push(`${w.id}: ${r.detail}`);
       if (r.oneShot) w.status = 'done';
+      fired = true;
     }
-    agendaSave(w);
+    // Persist only what changed (or a daily touch), so a quiet watcher does not commit every pulse.
+    const stale = !prev.last_checked || t - new Date(prev.last_checked) > DAY;
+    if (fired || stale || prev.fails !== w.state.fails || prev.last_result !== w.state.last_result) agendaSave(w);
   }
   // Gates: remind the founder, re-open deferred ones, never decide.
   for (const f of listFiles(statePath('gates'), '.json')) {
@@ -1431,7 +1462,13 @@ async function cmdPulse(o) {
   st.version = VERSION;
   const flushed = flushOutbox();
   if (o.sentinel !== false) await safeAsync(() => sentinel(st));
-  writeJson(pulseFile, st);
+  // The pulse state is committed when something in it changed, and otherwise every 6 h as a heartbeat. The
+  // per-loop slot memory (schedule) stops a re-evaluated window from firing twice.
+  const heartbeatDue = !st.heartbeat_at || t - new Date(st.heartbeat_at) > 6 * HOUR;
+  if (heartbeatDue || JSON.stringify({ ...st, last_pulse: null, heartbeat_at: null }) !== stAtStart) {
+    if (heartbeatDue) st.heartbeat_at = iso(t);
+    writeJson(pulseFile, st);
+  }
   if (o.push) {
     commit(`cos: pulse ${localStamp(tz, t)}${go.length ? ` · ${go.map((d) => d.loop.id).join(', ')}` : ''}`, ['company/state', 'company/agenda', company.paths.thread]);
     pushBranch(`pulse-${iso(t)}`);
@@ -1710,13 +1747,19 @@ async function main(argv) {
           commit(`cos: gate #${o.issue} decided`, ['company/state', 'company/agenda', config().company.paths.thread]);
           pushBranch(`gate-${o.issue}`);
         }
-        // Start the loop that asked at once; if this runner cannot reach its runtime, the pulse starts it next.
-        const started = r?.id ? await safeAsync(() => dispatch(loopById(r.loop), { reason: r.reason, agendaIds: [r.id] }), false) : false;
-        if (r?.id && started && o.push) {
+        // Start the loop that asked at once (marked "fired" first, so its run starts from that state); if this runner
+        // cannot reach the loop's runtime, the item goes back to "pending" and the pulse starts it.
+        if (r?.id && o.push) {
           const e = readJson(agendaFile(r.id));
           Object.assign(e, { status: 'fired', fired_at: iso() });
           agendaSave(e);
           if (commit(`cos: resume ${r.loop}`, ['company/agenda'])) pushBranch(`gate-${o.issue}-resume`);
+          const started = await safeAsync(() => dispatch(loopById(r.loop), { reason: r.reason, agendaIds: [r.id] }), false);
+          if (started === false) {
+            Object.assign(e, { status: 'pending', fired_at: null });
+            agendaSave(e);
+            if (commit(`cos: queue ${r.loop} for the pulse`, ['company/agenda'])) pushBranch(`gate-${o.issue}-queue`);
+          }
         }
         return;
       }

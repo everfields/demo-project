@@ -17,8 +17,12 @@
     "learnings": "company/learnings.md",
     "metrics": "company/metrics/"
   },
-  "thread": { "mode": "outbox" },
-  "protected": ["company/charter.md"],
+  "thread": {
+    "mode": "outbox"
+  },
+  "protected": [
+    "company/charter.md"
+  ],
   "checks": "none yet: the builder adds the project's checks here (e.g. \"pnpm check\")",
   "setup": [],
   "ci_workflow": null,
@@ -28,10 +32,19 @@
     "pulse_cron": "7,37 * * * *",
     "gha_workflow": "cos-loop.yml"
   },
-  "budget": { "soft": 0.75, "hard": 0.9 },
-  "caps": { "agenda_per_run": 8, "watchers_per_run": 4, "active_watchers": 60, "pending_agenda": 200, "max_horizon_days": 180 },
+  "budget": {
+    "soft": 0.75,
+    "hard": 0.9
+  },
+  "caps": {
+    "agenda_per_run": 8,
+    "watchers_per_run": 4,
+    "active_watchers": 60,
+    "pending_agenda": 200,
+    "max_horizon_days": 180
+  },
   "rollup_hour": 7,
   "watch_workflows": true,
   "incident_loop": "incident",
-  "engine_version": "1.0.0"
+  "engine_version": "1.1.0"
 }

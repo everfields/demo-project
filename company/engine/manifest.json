@@ -1,8 +1,8 @@
 {
   "files": {
-    "company/engine/cos.mjs": "595599e3ebc5639f",
+    "company/engine/cos.mjs": "cbaebaf67cafab8c",
     "company/engine/preamble.md": "8bd501f3dfe68b64",
-    "company/engine/README.md": "11258b1c0d146fb7",
+    "company/engine/README.md": "35ecb9efdcd9bdc0",
     ".claude/skills/cos-backlog/SKILL.md": "a30073695a194c9a",
     ".claude/skills/cos-incident/SKILL.md": "ef6ab65352413e1e",
     ".claude/skills/cos-reporter/SKILL.md": "8246f3794a573282",
@@ -12,6 +12,6 @@
     ".github/workflows/cos-loop.yml": "62c104eeeeb53efb",
     ".github/workflows/cos-pulse.yml": "1c69f06376651ae3"
   },
-  "engine_version": "1.0.0",
-  "installed_at": "2026-11-04T01:39:52Z"
+  "engine_version": "1.1.0",
+  "installed_at": "2026-11-04T01:46:23Z"
 }
