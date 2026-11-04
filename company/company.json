@@ -1,0 +1,37 @@
+{
+  "name": "Demo Co",
+  "one_liner": "Sandbox company that proves the Company OS end to end",
+  "repo": "everfields/demo-project",
+  "owner": "everfields",
+  "founder_name": "Carlos",
+  "timezone": "Europe/Madrid",
+  "stage": "launch",
+  "launched_at": "2026-11-04T01:32:03Z",
+  "default_branch": "main",
+  "paths": {
+    "charter": "company/charter.md",
+    "thread": "company/thread.md",
+    "backlog": "company/backlog.md",
+    "decisions": "company/decisions.md",
+    "status": "company/status.md",
+    "learnings": "company/learnings.md",
+    "metrics": "company/metrics/"
+  },
+  "thread": { "mode": "outbox" },
+  "protected": ["company/charter.md"],
+  "checks": "none yet: the builder adds the project's checks here (e.g. \"pnpm check\")",
+  "setup": [],
+  "ci_workflow": null,
+  "deploy_workflow": null,
+  "runtime": {
+    "default_runner": "gha",
+    "pulse_cron": "7,37 * * * *",
+    "gha_workflow": "cos-loop.yml"
+  },
+  "budget": { "soft": 0.75, "hard": 0.9 },
+  "caps": { "agenda_per_run": 8, "watchers_per_run": 4, "active_watchers": 60, "pending_agenda": 200, "max_horizon_days": 180 },
+  "rollup_hour": 7,
+  "watch_workflows": true,
+  "incident_loop": "incident",
+  "engine_version": "1.0.0"
+}

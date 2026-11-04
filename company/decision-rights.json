@@ -1,0 +1,20 @@
+{
+  "owners": ["everfields"],
+  "principle": "The founder is the board: they decide strategy and every expense. Everything else is decided and carried out by the Company OS without asking.",
+  "founder_words": "Carlos, 2026-11-04: \"I'm going to keep the big decisions at the strategy level and any expense approval, always.\" \"The only big limits are the big decisions and any spending decision. Those two things are always ours.\"",
+  "gates": {
+    "spend": {
+      "description": "Any money or financial commitment: purchases, subscriptions, plan upgrades, paid APIs or tools, ads, domains, fees, hires, contracts with a price, anything that adds a recurring cost. The founder's existing subscriptions and free tiers are not spend; a free tier that needs a card on file, or usage that could exceed a free allowance, is.",
+      "threshold": 0
+    },
+    "strategy": {
+      "description": "What the company is and where it goes: the charter (mission, customer, positioning, brand, north star), pricing, entering or leaving a market or channel, new products or pivots, stage changes, partnerships and legal commitments, public commitments that bind the company, anything irreversible at company level, and changes to these decision rights."
+    }
+  },
+  "autonomous": [
+    "Everything else, end to end: research, building and fixing the product, reviews and merges, deploys through the existing pipeline, content and SEO, analytics, experiments that cost nothing, backlog priorities, admin paperwork without fees, routine communication inside the approved positioning, and scheduling and tuning its own loops."
+  ],
+  "reserved": [],
+  "identity": "Acts that legally need the founder in person (signatures, government or tax ID submissions, KYC, 2FA, CAPTCHAs) are prepared end to end by the workers or the COO and handed to the founder for the last step. That is a hand-off, not a decision.",
+  "notify": { "remind_after_hours": 48 }
+}

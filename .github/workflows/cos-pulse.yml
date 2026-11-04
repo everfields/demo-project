@@ -1,0 +1,40 @@
+name: Company OS pulse
+
+# The clock of the Company OS (company/engine/cos.mjs pulse): loop schedules, the agenda the workers program
+# themselves, watchers, gate reminders, the sentinel (stale loops, red workflows) and the daily roll-up. No AI here.
+# GitHub delays and drops scheduled runs under load (seen: 3-5 of 68 daily slots delivered), so the pulse catches up on
+# missed slots, and anything outside can wake it too: `gh workflow run cos-pulse.yml` or a repository_dispatch
+# of type "cos-pulse" (an Azure cron job or another reliable clock, see the launch-company skill).
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  repository_dispatch:
+    types: [cos-pulse]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: cos-pulse
+  cancel-in-progress: false
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node company/engine/cos.mjs pulse --push
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COS_COO_WEBHOOK_URL: ${{ secrets.COS_COO_WEBHOOK_URL }}
+          COS_COO_WEBHOOK_TOKEN: ${{ secrets.COS_COO_WEBHOOK_TOKEN }}

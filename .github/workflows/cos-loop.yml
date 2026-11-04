@@ -1,0 +1,107 @@
+name: Company OS loop
+run-name: "${{ inputs.loop }}: ${{ inputs.reason }}"
+
+# One worker run (company/engine/cos.mjs run). Two jobs, so the AI never holds a token that can write the repo:
+#   work: Claude Code on the founder's subscription (CLAUDE_CODE_OAUTH_TOKEN, from `claude setup-token`), read-only
+#         contents; it commits locally and hands a git bundle plus its requests to the next job;
+#   land: no AI; validates every changed path against the loop's rights again, rebases on main, pushes, opens or
+#         merges the requested pull requests (checks green, no protected path) and starts follow-ups.
+on:
+  workflow_dispatch:
+    inputs:
+      loop:
+        description: Loop id from company/loops.json
+        required: true
+      reason:
+        description: Why it runs
+        required: false
+        default: manual run
+      agenda_ids:
+        description: Agenda entries handed to the run
+        required: false
+        default: ""
+      payload:
+        description: Event payload (untrusted data)
+        required: false
+        default: ""
+
+concurrency:
+  group: cos-loop-${{ inputs.loop }}
+  cancel-in-progress: false
+
+jobs:
+  work:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      actions: read
+      checks: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Project setup (only for loops that build or test)
+        run: node company/engine/cos.mjs setup --loop "$LOOP"
+        env:
+          LOOP: ${{ inputs.loop }}
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code@latest --no-fund --no-audit --loglevel=error
+      - name: Run the worker
+        run: node company/engine/cos.mjs run "$LOOP" --out "$RUNNER_TEMP/cos-out"
+        env:
+          LOOP: ${{ inputs.loop }}
+          COS_REASON: ${{ inputs.reason }}
+          COS_AGENDA_IDS: ${{ inputs.agenda_ids }}
+          COS_PAYLOAD: ${{ inputs.payload }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cos-run
+          path: ${{ runner.temp }}/cos-out
+          if-no-files-found: ignore
+          retention-days: 14
+
+  land:
+    needs: work
+    if: always() && needs.work.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        id: get
+        continue-on-error: true
+        with:
+          name: cos-run
+          path: ${{ runner.temp }}/cos-out
+      - name: Land
+        if: steps.get.outcome == 'success'
+        run: |
+          git config user.name "${COS_GIT_NAME:-Company OS}"
+          git config user.email "${COS_GIT_EMAIL:-41898282+github-actions[bot]@users.noreply.github.com}"
+          node company/engine/cos.mjs land "$RUNNER_TEMP/cos-out"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COS_COO_WEBHOOK_URL: ${{ secrets.COS_COO_WEBHOOK_URL }}
+          COS_COO_WEBHOOK_TOKEN: ${{ secrets.COS_COO_WEBHOOK_TOKEN }}

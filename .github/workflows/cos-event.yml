@@ -1,0 +1,36 @@
+name: Company OS event
+
+# Events into the Company OS (company/engine/cos.mjs event): any loop whose "events" list matches starts at once.
+#   repository_dispatch, type cos-event, client_payload {"type": "<event>", ...}: webhooks from outside (uptime
+#     monitors, payments, a Vercel or Grok Bot relay). The payload reaches the worker as untrusted data.
+#   an issue labelled cos:*: e.g. cos:coo-done when the COO finishes a task (event "label:cos:coo-done").
+on:
+  repository_dispatch:
+    types: [cos-event]
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  route:
+    if: github.event_name == 'repository_dispatch' || startsWith(github.event.label.name, 'cos:')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            company
+            .claude/skills
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node company/engine/cos.mjs event --type "$TYPE" --payload-env PAYLOAD
+        env:
+          TYPE: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.type || format('label:{0}', github.event.label.name) }}
+          PAYLOAD: ${{ github.event_name == 'repository_dispatch' && toJSON(github.event.client_payload) || toJSON(github.event.issue) }}
+          GH_TOKEN: ${{ github.token }}

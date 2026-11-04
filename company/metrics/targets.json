@@ -1,0 +1,6 @@
+{
+  "note": "Targets and guardrails the growth review measures against. Collectors (deterministic scripts) write snapshots next to this file as YYYY-MM-DD.json and latest.json; a missing or stale snapshot is reported as unknown, never as zero.",
+  "north_star": { "metric": "unknown", "definition": "", "target": null, "by": null },
+  "kpis": [],
+  "guardrails": []
+}

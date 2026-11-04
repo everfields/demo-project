@@ -1,0 +1,90 @@
+{
+  "note": "The org chart of the Company OS: one worker (loop) per role. Schedules are cron in company.json's timezone, never more often than hourly. The retro loop tunes cadence, model and enabled; widening tools or writable paths goes through a reviewed pull request. Writable paths apply to commits on main; code changes go through cos/* branches and the reviewer.",
+  "defaults": {
+    "model": "claude-sonnet-5-5",
+    "effort": "medium",
+    "max_turns": 80,
+    "timeout_minutes": 45,
+    "tools": [
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep",
+      "Skill"
+    ],
+    "writable": [
+      "company/**"
+    ]
+  },
+  "loops": [
+    {
+      "id": "incident",
+      "role": "SRE on call: every alarm has an owner until it is gone",
+      "skill": "cos-incident",
+      "schedule": "40 8 * * *",
+      "events": [
+        "alert*",
+        "incident*"
+      ],
+      "priority": "critical",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "max_turns": 120,
+      "timeout_minutes": 60,
+      "setup": true,
+      "max_age_hours": 50,
+      "writable": [
+        "company/**",
+        "docs/**"
+      ]
+    },
+    {
+      "id": "backlog",
+      "role": "Product manager: a ranked backlog with no dead items, and the builder never idle",
+      "skill": "cos-backlog",
+      "schedule": "30 8 * * 1,4",
+      "priority": "high",
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "max_age_hours": 120
+    },
+    {
+      "id": "coo",
+      "role": "Computer-use operator (Grok Bot or another agent with a browser and the founder's sessions)",
+      "runner": "coo",
+      "agenda_only": true
+    },
+    {
+      "id": "reporter",
+      "role": "Chief of staff: the founder's weekly one-page brief",
+      "skill": "cos-reporter",
+      "schedule": "0 9 * * 1",
+      "priority": "high",
+      "model": "claude-opus-5-5",
+      "effort": "medium",
+      "max_age_hours": 192
+    },
+    {
+      "id": "retro",
+      "role": "Coach: improves the operating system itself from its own record",
+      "skill": "cos-retro",
+      "schedule": "0 16 * * 5",
+      "priority": "normal",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "max_age_hours": 192,
+      "tools": [
+        "Bash",
+        "Read",
+        "Write",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Skill",
+        "Agent"
+      ]
+    }
+  ]
+}

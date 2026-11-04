@@ -1,0 +1,37 @@
+name: Company OS gate
+
+# The founder's decisions. A comment on a gate issue (label cos:gate) that starts with /approve, /reject or /defer
+# (or /aprobar, /rechazar, /aplazar) is recorded, the issue is closed or deferred, and the loop that asked resumes
+# with the founder's own words. Only an owner of the repo can decide; the engine checks the login again.
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+concurrency:
+  group: cos-gate
+  cancel-in-progress: false
+
+jobs:
+  decide:
+    if: contains(github.event.issue.labels.*.name, 'cos:gate') && github.event.comment.author_association == 'OWNER' && startsWith(github.event.comment.body, '/')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node company/engine/cos.mjs gate decide --issue "$ISSUE" --by "$AUTHOR" --comment-env COMMENT --push
+        env:
+          ISSUE: ${{ github.event.issue.number }}
+          AUTHOR: ${{ github.event.comment.user.login }}
+          COMMENT: ${{ github.event.comment.body }}
+          GH_TOKEN: ${{ github.token }}
