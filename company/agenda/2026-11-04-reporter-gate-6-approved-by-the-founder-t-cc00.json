@@ -10,6 +10,7 @@
   "created_by": "gate",
   "created_run": null,
   "created_at": "2026-11-04T01:42:01Z",
-  "status": "pending",
-  "gate": 6
+  "status": "fired",
+  "gate": 6,
+  "fired_at": "2026-11-04T01:42:04Z"
 }
