@@ -9,10 +9,13 @@
   "currency": null,
   "grant_paths": [],
   "deadline": null,
-  "status": "pending",
+  "status": "approved",
   "opened_by": "human",
   "opened_run": null,
   "opened_at": "2026-11-04T01:41:41Z",
   "reminders": 0,
-  "last_reminded": null
+  "last_reminded": null,
+  "decided_by": "everfields",
+  "decided_at": "2026-11-04T01:41:58Z",
+  "founder_words": "/approve TEST: mechanism check run by Claude during setup, not a founder decision"
 }
