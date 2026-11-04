@@ -5,7 +5,7 @@ The running state of the company, kept current by the reporter (weekly) and by a
 - **Stage:** launch
 - **Product:** not built yet
 - **Live at:** nothing live yet
-- **North star:** clean worker runs: 0 of 3 (target 2026-11-05), as of 2026-11-04
-- **Operating system:** Company OS installed 2026-11-04T01:32:03Z; loops in `company/loops.json`, engine 1.0.0. As of 2026-11-04 02:34 CET workers start but cannot run Bash (sandbox needs `socat`, missing on the runner)
-- **Waiting on the founder:** install `socat` on the runner (workflow change, outside worker rights); open `cos:gate` issues not checked (no shell)
-- **Open risks:** no worker shell, so no `cos`/`git`/`gh` (see `company/reports/2026-W45.md`)
+- **North star:** clean worker runs: 1 of 3 on the ledger (target 2026-11-05), as of 2026-11-04 02:45 CET; reporter run 2611040240 pending
+- **Operating system:** Company OS installed 2026-11-04T01:32:03Z; loops in `company/loops.json`, engine 1.0.0. Workers have a working sandboxed shell (`cos`, `git`, `gh`) since ebd1254, verified 2026-11-04 by run 2611040240
+- **Waiting on the founder:** nothing (no `cos:gate` issues, checked 2026-11-04)
+- **Open risks:** sandbox fix only one run old; north star deadline 2026-11-05 needs 2 more clean runs (see `company/reports/2026-W45.md`)

@@ -4,6 +4,8 @@ What the company learned about operating itself, newest first. The retro loop cu
 
 ## Operating learnings
 
+- **2026-11-04 · The worker shell works after ebd1254.** Run 2611040240 ran `cos`, `git` and `gh` inside the sandbox. Before that, run 2611040234 was recorded as `ok` while it had no shell at all. Lesson: a ledger `ok` does not mean the run was healthy, so the north star count should also check that the run made tool calls. Changed: the W45 report counts that run as degraded.
+
 ## Upstream
 Lessons that would help every company built with the launch-company skill (engine, loop skills, defaults). The founder's improvement routine harvests these into the skill; mark each **harvested <date>** once it has been.
 
