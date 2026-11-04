@@ -1,0 +1,18 @@
+{
+  "issue": 6,
+  "url": "https://github.com/everfields/demo-project/issues/6",
+  "title": "TEST: gate mechanism check (not a real decision)",
+  "kind": "strategy",
+  "resume_loop": "reporter",
+  "resume_context": "TEST gate during Company OS setup: write one thread line confirming you resumed with the founder's words, nothing else.",
+  "amount": null,
+  "currency": null,
+  "grant_paths": [],
+  "deadline": null,
+  "status": "pending",
+  "opened_by": "human",
+  "opened_run": null,
+  "opened_at": "2026-11-04T01:41:41Z",
+  "reminders": 0,
+  "last_reminded": null
+}
