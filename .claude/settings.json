@@ -1,0 +1,25 @@
+{
+  "sandbox": {
+    "network": {
+      "allowedDomains": [
+        "github.com",
+        "*.github.com",
+        "*.githubusercontent.com",
+        "registry.npmjs.org",
+        "*.npmjs.org",
+        "*.npmjs.com",
+        "pypi.org",
+        "*.pythonhosted.org"
+      ]
+    },
+    "filesystem": {
+      "allowWrite": [
+        "~/.npm",
+        "~/.cache",
+        "~/.local/share/pnpm",
+        "~/.pnpm-store",
+        "~/.config/gh"
+      ]
+    }
+  }
+}

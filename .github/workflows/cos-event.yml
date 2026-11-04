@@ -4,6 +4,7 @@ name: Company OS event
 #   repository_dispatch, type cos-event, client_payload {"type": "<event>", ...}: webhooks from outside (uptime
 #     monitors, payments, a Vercel or Grok Bot relay). The payload reaches the worker as untrusted data.
 #   an issue labelled cos:*: e.g. cos:coo-done when the COO finishes a task (event "label:cos:coo-done").
+# A listening loop this job cannot start (one that runs on Azure, say) is queued on the agenda for the next pulse.
 on:
   repository_dispatch:
     types: [cos-event]
@@ -11,7 +12,7 @@ on:
     types: [labeled]
 
 permissions:
-  contents: read
+  contents: write
   issues: write
   actions: write
 
@@ -23,6 +24,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          fetch-depth: 0
+          filter: blob:none
           sparse-checkout: |
             company
             .claude/skills
@@ -30,7 +33,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: node company/engine/cos.mjs event --type "$TYPE" --payload-env PAYLOAD
+      - run: node company/engine/cos.mjs event --type "$TYPE" --payload-env PAYLOAD --push
         env:
           TYPE: ${{ github.event_name == 'repository_dispatch' && github.event.client_payload.type || format('label:{0}', github.event.label.name) }}
           PAYLOAD: ${{ github.event_name == 'repository_dispatch' && toJSON(github.event.client_payload) || toJSON(github.event.issue) }}
