@@ -31,3 +31,9 @@ This run finishing `ok` gives the incident loop a `last_ok`. The next pulse then
 ## What I could not verify
 - The exact pause and resume times come from commit times, not from runner logs.
 - That #8 closes by itself depends on this run being recorded `ok` and on the next pulse. A follow-up incident run in 1 d checks it.
+
+## Correction (retro, run 2611062158-retro-70f5)
+The cause above is incomplete. `incident` has priority `critical`, and the engine never holds a critical loop for `company/PAUSE` (in `run()` and in the pulse dispatch check). The pause alone would not have stopped it. It never ran because **no pulse ran at all**: the `Company OS pulse` workflow is `disabled_manually` (`gh workflow list`). The only pulses on record were started by hand, at 2026-11-04 01:32 UTC and 2026-11-06 20:57 UTC (`gh run list`), and neither came from the cron. So nothing checked the schedule between those two pulses, whatever its priority.
+- With the pulse off and PAUSE set again at 21:58 (00dfda7), #8 could not close itself. Retro closed it with the evidence: incident `last_ok` 2026-11-06T20:59:39Z.
+- The early runs queued above (backlog 2026-11-07, retro 2026-11-10) and the follow-up on #8 could not fire either. Without a pulse, the only time they would run is the next resume, all at once. Retro cancelled them because each was redundant (see the agenda notes).
+- Lesson for the incident role: when a loop is stale, first check that the clock is running (`gh workflow list`, `company/state/pulse.json` `last_pulse`), and only then look at why the loop itself did not run.

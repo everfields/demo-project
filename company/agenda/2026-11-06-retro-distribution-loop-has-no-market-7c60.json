@@ -10,6 +10,8 @@
   "created_by": "distribution",
   "created_run": "2611062158-distribution-1147",
   "created_at": "2026-11-06T20:58:48Z",
-  "status": "fired",
-  "fired_at": "2026-11-06T20:59:12Z"
+  "status": "done",
+  "fired_at": "2026-11-06T20:59:12Z",
+  "note": "Decided D-001: distribution stays enabled. The founder re-paused the sandbox at 21:58 (00dfda7, 'its workers stay off') and set distribution's own item 'look again once the company is unpaused' for 2026-11-13; PAUSE already holds the loop and closes the market-silence alarm while paused. Disabling it would skip the founder's item.",
+  "closed_by": "retro"
 }

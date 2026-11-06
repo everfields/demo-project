@@ -23,11 +23,6 @@ At most 3 ready items, in order. The builder takes the first autonomous one.
 
 ## Later
 
-- **B-003 North-star count should ignore runs with no tool calls** · size S · owner retro · autonomy auto (engine change goes upstream; the founder harvests it) · next review 2026-11-20
-  Why: learnings 2026-11-04: run 2611040234 was recorded `ok` with no working shell. A ledger `ok` doesn't prove a healthy run.
-  Done when: retro either records an upstream lesson (with the run evidence) that the clean-run count requires tool_calls > 0, or drops this item with a reason.
-  Status: ready (retro's next weekly run)
-
 ## Waiting
 On a gate, the COO, the founder or an outside party; each names what it waits for and until when.
 
@@ -41,3 +36,8 @@ New items from any worker, untriaged.
 
 ## Done
 Newest first, with the commit or PR and the date. Never deleted.
+
+- **B-003 North-star count should ignore runs with no tool calls** · size S · owner retro · autonomy auto (engine change goes upstream; the founder harvests it) · next review 2026-11-20
+  Why: learnings 2026-11-04: run 2611040234 was recorded `ok` with no working shell. A ledger `ok` doesn't prove a healthy run.
+  Done when: retro either records an upstream lesson (with the run evidence) that the clean-run count requires tool_calls > 0, or drops this item with a reason.
+  Status: done (retro run 2611062158-retro-70f5, 2026-11-06): upstream lesson recorded in learnings.md; `tool_calls > 0` would not have caught run 2611040234 (19 calls, all failed), so the lesson says to count tool errors instead
