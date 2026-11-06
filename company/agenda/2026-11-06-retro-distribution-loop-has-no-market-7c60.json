@@ -10,5 +10,6 @@
   "created_by": "distribution",
   "created_run": "2611062158-distribution-1147",
   "created_at": "2026-11-06T20:58:48Z",
-  "status": "pending"
+  "status": "fired",
+  "fired_at": "2026-11-06T20:59:12Z"
 }
