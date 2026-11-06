@@ -1,0 +1,14 @@
+{
+  "id": "2026-11-06-incident-new-alarms-8-8c3e",
+  "kind": "task",
+  "loop": "incident",
+  "due": "2026-11-06T20:57:53Z",
+  "reason": "New alarms: #8",
+  "context": "#8 incident has not succeeded for 67 h",
+  "repeat": null,
+  "until": null,
+  "created_by": "sentinel",
+  "created_run": null,
+  "created_at": "2026-11-06T20:57:53Z",
+  "status": "pending"
+}

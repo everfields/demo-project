@@ -1,6 +1,16 @@
 {
-  "last_pulse": "2026-11-04T01:32:43Z",
-  "schedule": {},
-  "version": "1.0.0",
-  "alarms_seen": []
+  "last_pulse": "2026-11-06T20:57:50Z",
+  "schedule": {
+    "incident": "2026-11-06T07:40:00Z",
+    "backlog": "2026-11-05T07:30:00Z",
+    "retro": "2026-11-06T15:00:00Z",
+    "distribution": "2026-11-06T08:00:00Z"
+  },
+  "version": "1.3.0",
+  "alarms_seen": [
+    8
+  ],
+  "founder_deadlines": [],
+  "last_rollup": "2026-11-06",
+  "heartbeat_at": "2026-11-06T20:57:50Z"
 }
