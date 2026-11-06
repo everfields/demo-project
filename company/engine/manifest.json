@@ -1,17 +1,29 @@
 {
   "files": {
-    "company/engine/cos.mjs": "cbaebaf67cafab8c",
-    "company/engine/preamble.md": "8bd501f3dfe68b64",
-    "company/engine/README.md": "35ecb9efdcd9bdc0",
-    ".claude/skills/cos-backlog/SKILL.md": "a30073695a194c9a",
-    ".claude/skills/cos-incident/SKILL.md": "ef6ab65352413e1e",
-    ".claude/skills/cos-reporter/SKILL.md": "8246f3794a573282",
-    ".claude/skills/cos-retro/SKILL.md": "5d01f8d39eb2e832",
+    "company/engine/cos.mjs": "9558e49f14259993",
+    "company/engine/preamble.md": "4019d4ad232a1949",
+    "company/engine/README.md": "a92e08f102103bdf",
+    ".claude/skills/cos-backlog/SKILL.md": "a423d826f90c89df",
+    ".claude/skills/cos-incident/SKILL.md": "e9266a72297f21bd",
+    ".claude/skills/cos-reporter/SKILL.md": "0f111673d3d1ca8f",
+    ".claude/skills/cos-retro/SKILL.md": "4423d44090e324d2",
     ".github/workflows/cos-event.yml": "c4a0f649eadd215f",
-    ".github/workflows/cos-gate.yml": "d77602e4b05ff4db",
+    ".github/workflows/cos-gate.yml": "f38a6d7275b5a48b",
     ".github/workflows/cos-loop.yml": "62c104eeeeb53efb",
-    ".github/workflows/cos-pulse.yml": "1c69f06376651ae3"
+    ".github/workflows/cos-pulse.yml": "1c69f06376651ae3",
+    "company/engine/market-first.md": "438911dad9091f32",
+    "company/knowledge/first-100.md": "6d33704616201fb6",
+    "company/knowledge/market-learnings.md": "6c8ce860c50b03d8",
+    "company/knowledge/playbooks/b2b-saas.md": "b39ccff20be706a6",
+    "company/knowledge/playbooks/consumer-app.md": "734fe538081e2be8",
+    "company/knowledge/playbooks/content-affiliate.md": "ec56358b276628b9",
+    "company/knowledge/playbooks/ecommerce.md": "b75eb87ecb7451b0",
+    "company/knowledge/playbooks/generic.md": "93b5470ad48f2015",
+    "company/knowledge/playbooks/service.md": "505691549bfe77ef",
+    "company/knowledge/README.md": "b3f6c17fb63c0d6b",
+    "company/knowledge/rules-of-the-road.md": "6a2224d7cbde107a",
+    ".claude/skills/cos-distribution/SKILL.md": "949478eaf026bbdc"
   },
-  "engine_version": "1.1.0",
-  "installed_at": "2026-11-04T01:46:23Z"
+  "engine_version": "1.3.0",
+  "installed_at": "2026-11-06T20:55:25Z"
 }

@@ -26,7 +26,7 @@ Use the format in the backlog file: id, title, size, owner, autonomy, next revie
 - the problem;
 - acceptance criteria someone else can check;
 - the owner loop;
-- the autonomy class: auto, gate:spend, gate:strategy, or hand-off when the founder must do it in person;
+- the autonomy class: auto, gate:spend, gate:strategy, or founder (a founder item) when only the founder can do it;
 - the risks;
 - for L items, the first slice that ships value on its own.
 
@@ -43,8 +43,11 @@ Use the format in the backlog file: id, title, size, owner, autonomy, next revie
 In order:
 1. Anything that protects production, revenue or data.
 2. The founder's asks, in their words.
-3. Expected impact on the north star × confidence ÷ effort.
-4. Cleanup.
+3. While the first-users mode is on (`cos market status`): what the next market test needs, tagged `market` in the item's title. Nothing else outranks it.
+4. Expected impact on the north star × confidence ÷ effort.
+5. Cleanup.
+
+While that mode is on, a feature nobody has asked for stays out of Now, however good it looks. Ask of each item: which bet needs it, and which person is waiting for it?
 
 **Now** holds at most 3 ready items. Prefer finishing over starting.
 

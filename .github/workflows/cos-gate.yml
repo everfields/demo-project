@@ -1,8 +1,11 @@
 name: Company OS gate
 
-# The founder's decisions. A comment on a gate issue (label cos:gate) that starts with /approve, /reject or /defer
-# (or /aprobar, /rechazar, /aplazar) is recorded, the issue is closed or deferred, and the loop that asked resumes
-# with the founder's own words. Only an owner of the repo can decide; the engine checks the login again.
+# The founder's comments.
+#   On a gate (label cos:gate): a comment that starts with /approve, /reject or /defer (or /aprobar, /rechazar,
+#     /aplazar) is recorded, the issue is closed or deferred, and the loop that asked resumes with the founder's words.
+#   On a founder item (label founder, not a gate): any comment wakes the loop that owns the item, which checks it and
+#     closes it once it is done.
+# Only an owner of the repo counts; the engine checks the login again and ignores its own comments.
 on:
   issue_comment:
     types: [created]
@@ -18,7 +21,11 @@ concurrency:
 
 jobs:
   decide:
-    if: contains(github.event.issue.labels.*.name, 'cos:gate') && github.event.comment.author_association == 'OWNER' && startsWith(github.event.comment.body, '/')
+    if: >-
+      github.event.comment.author_association == 'OWNER' &&
+      !contains(github.event.comment.body, '<!-- cos:bot -->') &&
+      ((contains(github.event.issue.labels.*.name, 'cos:gate') && startsWith(github.event.comment.body, '/')) ||
+       (contains(github.event.issue.labels.*.name, 'founder') && !contains(github.event.issue.labels.*.name, 'cos:gate')))
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -29,7 +36,7 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 22
-      - run: node company/engine/cos.mjs gate decide --issue "$ISSUE" --by "$AUTHOR" --comment-env COMMENT --push
+      - run: node company/engine/cos.mjs founder reply --issue "$ISSUE" --by "$AUTHOR" --comment-env COMMENT --push
         env:
           ISSUE: ${{ github.event.issue.number }}
           AUTHOR: ${{ github.event.comment.user.login }}

@@ -23,6 +23,7 @@ The system that runs the company has to get better every week, the way a good te
 - **Gates:** how long the founder took, how many were rejected, and why. A pattern of rejections means a worker misreads the strategy; fix its skill.
 - **Decisions:** the share of reviewed decisions that reached their success bar. Calibration matters more than optimism.
 - **Thread noise:** entries nobody acted on.
+- **The market's share of the machine:** while the first-users mode is on, compare the runs and usage that went to the market with those that went to building, research and bookkeeping. A company that builds while nobody hears about it is failing, however green its runs are.
 
 ## 2. Decide improvements (at most 5 a week; the best ones first)
 - **Tune** `company/loops.json` directly, on `main`:
@@ -37,7 +38,7 @@ The system that runs the company has to get better every week, the way a good te
 - **Never** edit the engine, the workflows or the decision rights. Write what should change there under **Upstream** in the learnings file. Engine and skill-template changes happen in the launch-company skill, and the founder's improvement routine harvests them.
 
 ## 3. Record
-- **The learnings file:** one entry per lesson (date, what happened, the lesson, what changed). Generic lessons, useful to any company, also go under **Upstream**.
+- **The learnings file:** one entry per lesson (date, what happened, the lesson, what changed). Generic lessons, useful to any company, also go under **Upstream**. Lessons from the market, with their numbers and the business pattern, are tagged **market** there: they feed the playbooks every company shares.
 - **The thread entry** (`cos thread post --author "Retro"`):
   - the machine's state (Green, Amber or Red);
   - the numbers that matter: success rate, usage trend, flow;

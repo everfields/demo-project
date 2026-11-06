@@ -46,5 +46,12 @@
   "rollup_hour": 7,
   "watch_workflows": true,
   "incident_loop": "incident",
-  "engine_version": "1.1.0"
+  "engine_version": "1.3.0",
+  "market": {
+    "unit": "test lines",
+    "target": 100,
+    "max_silence_days": 2,
+    "alarm_silence_days": 5
+  },
+  "playbook": "generic"
 }

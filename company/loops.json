@@ -85,6 +85,39 @@
         "Skill",
         "Agent"
       ]
+    },
+    {
+      "id": "distribution",
+      "role": "Head of Distribution, the founding seller: real people hear the offer every working day until the first users exist, then a repeatable channel",
+      "skill": "cos-distribution",
+      "schedule": "0 9 * * 1-5",
+      "events": [
+        "label:cos:bet",
+        "market*"
+      ],
+      "priority": "high",
+      "model": "claude-opus-5-5",
+      "effort": "high",
+      "max_turns": 150,
+      "timeout_minutes": 60,
+      "max_age_hours": 96,
+      "tools": [
+        "Bash",
+        "Read",
+        "Write",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Skill",
+        "WebSearch",
+        "WebFetch",
+        "Agent"
+      ],
+      "writable": [
+        "company/**",
+        "docs/**",
+        "site/**"
+      ]
     }
   ]
 }
