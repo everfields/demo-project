@@ -1,0 +1,14 @@
+{
+  "id": "2026-11-13-distribution-sandbox-look-again-once-the-comp-9a60",
+  "kind": "task",
+  "loop": "distribution",
+  "due": "2026-11-13T20:58:19Z",
+  "reason": "Sandbox: look again once the company is unpaused",
+  "context": "",
+  "repeat": null,
+  "until": null,
+  "created_by": "human",
+  "created_run": null,
+  "created_at": "2026-11-06T20:58:19Z",
+  "status": "pending"
+}
