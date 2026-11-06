@@ -33,7 +33,7 @@ One bet is one offer to one audience. The bar is written before the data and nev
 The next three market moves, with dates. Each one reaches real people.
 
 1. ~~Prove the loop: read the files, run cos market status, log one line marked as a test. No real people.~~ Done 2026-11-06 (run 2611062156-distribution-595d): ledger entry `2026-11-06-action-6ecfdf`, channel `sandbox-test`, reach 0.
-2. None. The sandbox has no market: the next move waits until the founder sets a real one.
+2. None. The sandbox has no market: the next move waits until the founder sets a real one. Run 2611062158-distribution-1147 (2026-11-06) checked and made no move by design; it asked retro to pause this loop (agenda `2026-11-06-retro-distribution-loop-has-no-market-7c60`).
 
 ## What the market told us
 Newest first: what people said and did, in their words, and what changed because of it.

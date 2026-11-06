@@ -1,0 +1,14 @@
+{
+  "id": "2026-11-06-retro-distribution-loop-has-no-market-7c60",
+  "kind": "task",
+  "loop": "retro",
+  "due": "2026-11-06T20:58:48Z",
+  "reason": "Distribution loop has no market in the sandbox: decide whether to pause it",
+  "context": "Charter: sandbox, customer is the founder only; plan.md: 'This company must contact nobody'. Live proof already done (ledger 2026-11-06-action-6ecfdf, commit cc5fc60); commit a0115ae intended to pause after live verification. Run 2611062158-distribution-1147 made no market move by design. Left on, it runs every weekday with nothing to do and market.alarm_silence_days=5 will raise a silence alarm around 2026-11-11. Recommendation: set distribution enabled=false in loops.json (retro owns enabled).",
+  "repeat": null,
+  "until": null,
+  "created_by": "distribution",
+  "created_run": "2611062158-distribution-1147",
+  "created_at": "2026-11-06T20:58:48Z",
+  "status": "pending"
+}
