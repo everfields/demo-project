@@ -1,0 +1,14 @@
+{
+  "id": "2026-11-07-backlog-first-backlog-triage-since-launc-f4c8",
+  "kind": "task",
+  "loop": "backlog",
+  "due": "2026-11-07T20:59:16Z",
+  "reason": "First backlog triage since launch, ahead of the stale alarm (120 h from launched_at = 2026-11-09 02:32 CET, before the Mon 08:30 schedule)",
+  "context": "Postmortem company/incidents/2026-11-06-stale-incident-after-pause.md; the company resumed from PAUSE 2026-11-06 21:55",
+  "repeat": null,
+  "until": null,
+  "created_by": "incident",
+  "created_run": "2611062158-incident-8c98",
+  "created_at": "2026-11-06T20:59:16Z",
+  "status": "pending"
+}

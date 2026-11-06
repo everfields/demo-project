@@ -1,0 +1,14 @@
+{
+  "id": "2026-11-07-incident-confirm-alarm-8-staleincident-cl-cf28",
+  "kind": "task",
+  "loop": "incident",
+  "due": "2026-11-07T20:59:16Z",
+  "reason": "Confirm alarm #8 (stale:incident) closed after run 2611062158 recorded ok; close it by hand with evidence if the pulse did not",
+  "context": "company/state/runs/incident.json last_ok; gh issue view 8",
+  "repeat": null,
+  "until": null,
+  "created_by": "incident",
+  "created_run": "2611062158-incident-8c98",
+  "created_at": "2026-11-06T20:59:16Z",
+  "status": "pending"
+}
